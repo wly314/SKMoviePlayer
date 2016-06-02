@@ -13,14 +13,13 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/wly314/SKMoviePlayer"
 
 
-  s.license      = "MIT"
+  s.license      = { :type => 'MIT', :file => 'LICENSE' }
 
   s.author             = { "Leou" => "783459987@qq.com" }
 
-  s.source       = { :git => "https://github.com/wly314/SKMoviePlayer.git", :commit => "725c1da19f9c35e18166c8a7195b691d6c7f520b" }
+  s.source       = { :git => "https://github.com/wly314/SKMoviePlayer.git", :commit => "725c1da19f9c35e18166c8a7195b691d6c7f520b", :tag => s.version.to_s }
 
   s.source_files  = "SKMoviePlayer", "SKMoviePlayer/**/*.{h,m}"
-  s.exclude_files = "SKMoviePlayer/SKImages"
 
   s.platform     = :ios, "7.0"
   s.ios.deployment_target = "7.0"
