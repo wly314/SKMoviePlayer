@@ -8,10 +8,16 @@
 
 #import "SKMoviePlayer.h"
 
-@interface SKMoviePlayer ()<SKMovieControlBarDelegate> {
+@interface SKMoviePlayer () {
     
     /** 播放状态，手动控制。缓存播放完的时候可能会停止播放，通过监听状态，纪录状态，再次播放 **/
     BOOL        playStatus;//0 播放 1 停止
+    
+    /** 载入视频小菊花 */
+    UIActivityIndicatorView *loadActivityIndicator;
+    
+    /** 显示或者隐藏控制条 默认0显示 */
+    BOOL        showOrHidenControlBar;
 }
 
 /** 播放器 */
@@ -27,6 +33,8 @@
 
 @implementation SKMoviePlayer
 
+@synthesize skFullScreenVC = _skFullScreenVC;
+
 - (id)initWithFrame:(CGRect)frame playerUrlPath:(NSString *)urlString {
     
     self = [super initWithFrame:frame];
@@ -38,65 +46,114 @@
         _skContentView.translatesAutoresizingMaskIntoConstraints = NO;
         _skContentView.backgroundColor = [UIColor blackColor];
         [self addSubview:_skContentView];
-        
         [self constraintItem:_skContentView toItem:self topMultiplier:1 topConstant:0 bottomMultiplier:1 bottomConstant:0 leftMultiplier:1 leftConstant:0 rightMultiplier:1 rightConstant:0 widthMultiplier:0 width:0 heightMultiplier:0 height:0];
+        
+        UIView *tapView = [[UIView alloc] init];
+        tapView.translatesAutoresizingMaskIntoConstraints = NO;
+        [_skContentView addSubview:tapView];
+        [self constraintItem:tapView toItem:_skContentView topMultiplier:1 topConstant:0 bottomMultiplier:1 bottomConstant:0 leftMultiplier:1 leftConstant:0 rightMultiplier:1 rightConstant:0 widthMultiplier:0 width:0 heightMultiplier:0 height:0];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHideOrShow:)];
+        [tapView addGestureRecognizer:tap];
         
         if (urlString && urlString.length > 0) {
             
             _skUrlString = urlString;
-            
-            [self initPlayerView];
         }
+        
+        /** 初始化AVPlayerItem **/
+        _skPlayerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_skUrlString]];
+        /** 监听status属性 */
+        [_skPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+        /** 监听loadedTimeRanges属性 */
+        [_skPlayerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+        /** 缓冲没有了 */
+        [_skPlayerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:NSKeyValueObservingOptionNew context:nil];
+        /** 监听缓存预测是否足够支持播放 */
+        [_skPlayerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew context:nil];
+        /** 添加视频播放结束通知 */
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(moviePlayDidEnd:) name:AVPlayerItemDidPlayToEndTimeNotification object:_skPlayerItem];
+        
+        
+        /** 主屏幕的播放按钮 **/
+        UIButton *playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        playBtn.translatesAutoresizingMaskIntoConstraints = NO;
+        [_skContentView addSubview:playBtn];
+        playBtn.backgroundColor = [UIColor clearColor];
+        [playBtn setImage:[UIImage imageNamed:@"play_fullscreen"] forState:UIControlStateNormal];
+        [playBtn setImage:[UIImage imageNamed:@"pause_fullscreen"] forState:UIControlStateHighlighted];
+        [playBtn setImage:[UIImage imageNamed:@"pause_fullscreen"] forState:UIControlStateSelected];
+        [playBtn addTarget:self action:@selector(setupMoviePlayerAndPlay:) forControlEvents:UIControlEventTouchUpInside];
+        [self constraintItem:playBtn toItem:_skContentView topMultiplier:0 topConstant:0 bottomMultiplier:0 bottomConstant:0 leftMultiplier:0 leftConstant:0 rightMultiplier:0 rightConstant:0 widthMultiplier:0 width:50 heightMultiplier:0 height:50];
+        [self constraintCneterXOfItem:playBtn toItem:_skContentView];
+        [self constraintCneterYOfItem:playBtn toItem:_skContentView];
+        
+        /** 播放控制器 加载视频的动画 */
+        [self initPlayerView];
     }
     
     return self;
 }
 
+#pragma mark - 
+/** 视频未加载前的播放按钮 **/
+- (void)setupMoviePlayerAndPlay:(UIButton *)aBtn {
+    
+    aBtn.selected = !aBtn.selected;
+    
+    if (_skUrlString) {
+        
+        aBtn.hidden = YES;
+        [loadActivityIndicator startAnimating];
+        [self replacePlayerItem];
+    }
+}
+
 - (void)setSkUrlString:(NSString *)skUrlString {
     
     /** 如果已经存在 需要替换AVPlayerItem */
-    if (_skUrlString && _skUrlString.length > 0) {
-        
-        [self replacePlayerItem];
-        
-    }else {
+    if (skUrlString && skUrlString.length > 0) {
         
         _skUrlString = skUrlString;
         
-        [self initPlayerView];
+        [self replacePlayerItem];
     }
 }
 
 - (void)initPlayerView {
     
-    _skPlayerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_skUrlString]];
-    /** 监听status属性 */
-    [_skPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-    /** 监听loadedTimeRanges属性 */
-    [_skPlayerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
-    /** 缓冲没有了 */
-    [_skPlayerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options:NSKeyValueObservingOptionNew context:nil];
-    /** 监听缓存预测是否足够支持播放 */
-    [_skPlayerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew context:nil];
-    /** 添加视频播放结束通知 */
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(moviePlayDidEnd:) name:AVPlayerItemDidPlayToEndTimeNotification object:_skPlayerItem];
+    /** 载入视频小菊花 */
+    loadActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    loadActivityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
+    [_skContentView addSubview:loadActivityIndicator];
+    [self constraintItem:loadActivityIndicator toItem:_skContentView topMultiplier:0 topConstant:0 bottomMultiplier:0 bottomConstant:0 leftMultiplier:0 leftConstant:0 rightMultiplier:0 rightConstant:0 widthMultiplier:0 width:50 heightMultiplier:0 height:50];
+    [self constraintCneterXOfItem:loadActivityIndicator toItem:_skContentView];
+    [self constraintCneterYOfItem:loadActivityIndicator toItem:_skContentView];
     
-    /** 初始化播放器 */
-    _skPlayer = [[AVPlayer alloc] initWithPlayerItem:_skPlayerItem];
-    _skPlayerLayer = [AVPlayerLayer playerLayerWithPlayer:_skPlayer];
-    _skPlayerLayer.frame = self.layer.bounds;
-    [_skContentView.layer addSublayer:_skPlayerLayer];
+    /** 改变圈圈的颜色 iOS5引入 */
+    loadActivityIndicator.color = [UIColor redColor];
+    [loadActivityIndicator setHidesWhenStopped:YES];
+}
+
+- (void)initControlBar {
     
-    
-    /** 设置播放器控制器 */
-    _skMovieControl = [[SKMovieControlBar alloc] init];
-    _skMovieControl.translatesAutoresizingMaskIntoConstraints = NO;
-    _skMovieControl.delegate = self;
-    [_skContentView addSubview:_skMovieControl];
-    [self constraintItem:_skMovieControl toItem:_skContentView topMultiplier:0 topConstant:0 bottomMultiplier:1 bottomConstant:0 leftMultiplier:1 leftConstant:0 rightMultiplier:1 rightConstant:0 widthMultiplier:0 width:0 heightMultiplier:0 height:50];
+    if (!_skMovieControl) {
+        
+        /** 设置播放器控制器 */
+        _skMovieControl = [[SKMovieControlBar alloc] init];
+        _skMovieControl.translatesAutoresizingMaskIntoConstraints = NO;
+        _skMovieControl.backgroundColor = [UIColor clearColor];
+        [_skContentView addSubview:_skMovieControl];
+        [self constraintItem:_skMovieControl toItem:_skContentView topMultiplier:0 topConstant:0 bottomMultiplier:1 bottomConstant:0 leftMultiplier:1 leftConstant:0 rightMultiplier:1 rightConstant:0 widthMultiplier:0 width:0 heightMultiplier:0 height:30];
+        _skMovieControl.skDownloadControl.hidden = !_isCanDownload;
+        
+        /** 添加各类点击事件 **/
+        [self addAllTagetHandel];
+    }
 }
 
 - (void)setSkPlayerSize:(CGSize)skPlayerSize {
+    
+    _skPlayerSize = skPlayerSize;
     
     CGRect rect = self.bounds;
     
@@ -121,11 +178,7 @@
         
         [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:_skPlayerItem];
     }
-    
     _skPlayerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_skUrlString]];
-    [_skPlayer replaceCurrentItemWithPlayerItem:_skPlayerItem];
-    
-    
     /** 监听status属性 */
     [_skPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
     /** 监听loadedTimeRanges属性 */
@@ -137,6 +190,38 @@
     /** 添加视频播放结束通知 */
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(moviePlayDidEnd:) name:AVPlayerItemDidPlayToEndTimeNotification object:_skPlayerItem];
     
+    if (!_skPlayer) {
+        
+        /** 初始化播放器 */
+        _skPlayer = [[AVPlayer alloc] initWithPlayerItem:_skPlayerItem];
+        _skPlayerLayer = [AVPlayerLayer playerLayerWithPlayer:_skPlayer];
+        
+        _skPlayerLayer.frame = self.layer.bounds;
+        [_skContentView.layer addSublayer:_skPlayerLayer];
+        
+        CGRect rect = self.bounds;
+        if ((_skPlayerSize.width < rect.size.width && _skPlayerSize.height < rect.size.height) && (_skPlayerSize.width > 0 && _skPlayerSize.height > 0)) {
+            
+            _skPlayerLayer.frame = CGRectMake((rect.size.width - _skPlayerSize.width) / 2, (rect.size.height - _skPlayerSize.height) / 2, _skPlayerSize.width, _skPlayerSize.height);
+        }
+        
+    }else {
+        
+        [_skPlayer replaceCurrentItemWithPlayerItem:_skPlayerItem];
+    }
+}
+
+#pragma mark - 下载按钮控制
+- (void)setIsCanDownload:(BOOL)isCanDownload {
+    
+    _isCanDownload = isCanDownload;
+    if (isCanDownload) {
+        
+        _skMovieControl.skDownloadControl.hidden = NO;
+    }else {
+        
+        _skMovieControl.skDownloadControl.hidden = YES;
+    }
 }
 
 #pragma mark - 视频播放器监听
@@ -149,38 +234,40 @@
         
         if ([playerItem status] == AVPlayerStatusReadyToPlay) {
             
-            NSLog(@"AVPlayerStatusReadyToPlay");
-            /** 获取视频总长度 */
-            CMTime duration = _skPlayerItem.duration;
-            /** 转换成秒 */
+            [loadActivityIndicator stopAnimating];
+            [self initControlBar];
+            [_skPlayer play];
+            _skMovieControl.skPlayControl.selected = YES;
+            
+            /** 转成秒 */
             CGFloat totalSecond = playerItem.duration.value / playerItem.duration.timescale;
             /** 转换成播放时间 */
+            NSString *totalTimeStr = [self convertTime:totalSecond];
+            _skMovieControl.skTotalTimeLabel.text = totalTimeStr;
+            /** 设置slider最大value */
+            _skMovieControl.skTotalTimeValue = totalSecond;
             
-            NSLog(@"movie total duration:%f",CMTimeGetSeconds(duration));
             /** 监听播放状态 */
             [self monitoringPlayback:_skPlayerItem];
             
         }else if ([playerItem status] == AVPlayerStatusFailed) {
             
-            NSLog(@"AVPlayerStatusFailed");
+            /** 加载失败 **/
         }
     }else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
         
         /** 计算缓冲进度 */
         NSTimeInterval timeInterval = [self availableDuration];
-        NSLog(@"Time Interval:%f",timeInterval);
         CMTime duration = _skPlayerItem.duration;
         CGFloat totalDuration = CMTimeGetSeconds(duration);
+        _skMovieControl.skCurrentProgress = timeInterval / totalDuration;
         
     }else if ([keyPath isEqualToString:@"playbackBufferEmpty"]) {
         
         if (_skPlayerItem.playbackBufferEmpty) {
             
-            NSLog(@"缓冲没有了，暂停播放了");
-            
-            NSLog(@" %ld ===== %ld ", (long)_skPlayer.status, (long)_skPlayerItem.status);
-            
             playStatus = YES;
+            self.skMovieControl.skPlayControl.selected = NO;
         }
     }else if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
         
@@ -190,6 +277,9 @@
             if (playStatus && _skPlayerItem.status == AVPlayerStatusReadyToPlay) {
                 
                 [_skPlayer play];
+                self.skMovieControl.skPlayControl.selected = YES;
+                
+                playStatus = NO;
             }
         }
     }
@@ -199,12 +289,16 @@
 - (void)monitoringPlayback:(AVPlayerItem *)playerItem {
     
     __weak typeof(self) weakSelf = self;
+    
     [_skPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime time) {
         
         /** 计算当前在第几秒 */
         CGFloat currentSecond = playerItem.currentTime.value/playerItem.currentTime.timescale;
         NSString *timeString = [weakSelf convertTime:currentSecond];
-        NSLog(@"%@", timeString);
+        
+        weakSelf.skMovieControl.skCurrentTimeLabel.text = timeString;
+        /** 设置slider当前value */
+        weakSelf.skMovieControl.skCurrentTimeValue = currentSecond;
     }];
 }
 
@@ -226,6 +320,11 @@
 - (void)moviePlayDidEnd:(NSNotification *)notification {
    
     NSLog(@"Play end");
+    
+    [_skPlayer seekToTime:kCMTimeZero completionHandler:^(BOOL finished) {
+        
+        self.skMovieControl.skPlayControl.selected = NO;
+    }];
 }
 
 /** 播放时间转换 **/
@@ -252,15 +351,159 @@
 }
 
 #pragma mark - 控制器代理方法 播放或暂停
-- (void)playOrPause:(UIButton *)aBtn {
+- (void)addAllTagetHandel {
     
-    if (aBtn.selected) {
+    /** 避免循环引用 **/
+    __weak typeof(self)weakSelf = self;
+    
+    /** 播放或暂停 */
+    [_skMovieControl addPlayOrPauseHandler:^(id obj) {
         
-        [_skPlayer play];
-    }else {
+        UIButton *btn = (UIButton *)obj;
         
-        [_skPlayer pause];
+        if (btn.selected) {
+            
+            [weakSelf.skPlayer play];
+        }else {
+            [weakSelf.skPlayer pause];
+        }
+    }];
+    
+    /** 全屏操作 */
+    [_skMovieControl addFullScreenHandler:^(id obj) {
+        
+        [weakSelf fullScreenSwitch:obj];
+        
+    }];
+    
+    /** 点击播放进度 */
+    [_skMovieControl addTapVideoValueHandler:^(id obj, NSInteger value) {
+       
+        [weakSelf tapToPlayerAtTime:value];
+    }];
+    
+    /** 拖拽播放进度 **/
+    [_skMovieControl addDragVideoValueHandler:^(id obj, NSInteger value) {
+        
+        [weakSelf dragToPlayerAtTime:value];
+    }];;
+    
+    /** 视频下载 */
+    [_skMovieControl addDownloadHandler:^(id obj) {
+        
+        [weakSelf downloadVideo:obj];
+    }];;
+}
+
+/** 全屏回调方法回调，外部控制使用页面跳转的方式 **/
+- (void)fullScreenSwitch:(id)obj {
+    
+    UIButton *btn = (UIButton *)obj;
+    /** 避免循环引用 **/
+    __weak typeof(self)weakSelf = self;
+    
+    if ([_delegate respondsToSelector:@selector(moviePlayer:fullScreenSwitchOrientation: complection:)]) {
+        
+        [_delegate moviePlayer:weakSelf fullScreenSwitchOrientation:btn.selected complection:^(BOOL isComplection){
+            
+            if (btn.selected) {
+                
+                if (isComplection) {
+                    
+                    _skPlayerLayer.frame = [UIScreen mainScreen].bounds;
+                    
+                }else {
+                    
+                    _skPlayerLayer.frame = self.bounds;
+                }
+            }else {
+                
+                if (isComplection) {
+                    
+                    _skPlayerLayer.frame = self.bounds;
+                    
+                }else {
+                    
+                    _skPlayerLayer.frame = [UIScreen mainScreen].bounds;
+                }
+            }
+        }];
     }
+}
+
+/** 点击拖拽进度的方法 */
+- (void)tapToPlayerAtTime:(NSInteger)time {
+    
+    CMTime toTime = CMTimeMakeWithSeconds(time, _skPlayerItem.currentTime.timescale);
+    [_skPlayer seekToTime:toTime completionHandler:^(BOOL finished) {
+        
+        self.skMovieControl.skPlayControl.selected = YES;
+        [_skPlayer play];
+    }];
+}
+
+/** 拖拽播放进度的方法 */
+- (void)dragToPlayerAtTime:(NSInteger)time {
+    
+    CMTime toTime = CMTimeMakeWithSeconds(time, _skPlayerItem.currentTime.timescale);
+    [_skPlayer seekToTime:toTime completionHandler:^(BOOL finished) {
+        
+        self.skMovieControl.skPlayControl.selected = YES;
+        [_skPlayer play];
+    }];
+}
+
+/** 视频下载 */
+- (void)downloadVideo:(UIButton *)aBtn {
+    
+    __weak typeof(self)weakSelf = self;
+    if ([_delegate respondsToSelector:@selector(moviePlayer:videoDownloaded:)]) {
+        
+        [_delegate moviePlayer:weakSelf videoDownloaded:^(BOOL isDownloaded) {
+           
+            /** 视频是否下载了 **/
+        }];
+    }
+}
+
+#pragma mark - 外部代码操作控制播放暂停
+/** 暂停 */
+- (void)pause {
+    
+    [_skPlayer pause];
+    _skMovieControl.skPlayControl.selected = NO;
+}
+
+/** 播放 */
+- (void)play {
+    
+    [_skPlayer play];
+    _skMovieControl.skPlayControl.selected = YES;
+}
+
+#pragma mark - 懒加载代码 全屏操作－创建全屏视图控制器
+- (void)setSkFullScreenVC:(SKFullScreenViewController *)skFullScreenVC {
+    
+    _skFullScreenVC = skFullScreenVC;
+}
+
+- (SKFullScreenViewController *)skFullScreenVC {
+    
+    if (!_skFullScreenVC) {
+        
+        _skFullScreenVC = [[SKFullScreenViewController alloc] init];
+    }
+    
+    return _skFullScreenVC;
+}
+
+#pragma mark - 隐藏或显示控制器
+/** 隐藏或显示控制器 **/
+- (void)tapHideOrShow:(id)obj {
+    
+    showOrHidenControlBar = !showOrHidenControlBar;
+    
+    _skMovieControl.hidden = showOrHidenControlBar;
 }
 
 #pragma mark -

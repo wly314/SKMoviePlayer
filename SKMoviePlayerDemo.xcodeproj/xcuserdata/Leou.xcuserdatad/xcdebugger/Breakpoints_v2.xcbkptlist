@@ -20,11 +20,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMoviePlayer.m"
-            timestampString = "486386268.243466"
+            timestampString = "486531337.234846"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "192"
-            endingLineNumber = "192"
+            startingLineNumber = "487"
+            endingLineNumber = "487"
+            landmarkName = "-setSkFullScreenVC:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMoviePlayer.m"
+            timestampString = "486531337.234846"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
             landmarkName = "-observeValueForKeyPath:ofObject:change:context:"
             landmarkType = "5">
          </BreakpointContent>
@@ -35,13 +51,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMovieControlBar.m"
-            timestampString = "486386186.131446"
+            filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKFullScreenViewController.m"
+            timestampString = "486472602.356274"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "42"
-            endingLineNumber = "42"
-            landmarkName = "-playButtonClick:"
+            startingLineNumber = "23"
+            endingLineNumber = "23"
+            landmarkName = "-loadView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -51,13 +67,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMovieControlBar.m"
-            timestampString = "486386275.701351"
+            filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMoviePlayer.m"
+            timestampString = "486531337.234846"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "-playButtonClick:"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
+            landmarkName = "-setIsCanDownload:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
