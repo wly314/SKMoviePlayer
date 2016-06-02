@@ -10,6 +10,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "SKMovieControlBar.h"//播放器控制条
+#import "SKMovieFullScreenTitltBar.h"//全屏标题栏(返回按钮)
 /** 全屏视图控制器 */
 #import "SKFullScreenViewController.h"
 
@@ -27,7 +28,11 @@ typedef void (^SKFullDownloaded)(BOOL isDownloaded);
 
 @property (nonatomic, assign)id<SKMoviePlayerDelegate> delegate;
 
+/** 视频地址，可以在需要的时候切换视频地址，不用重新创建 */
 @property (nonatomic, strong)NSString           *skUrlString;
+
+/** 视频名字 **/
+@property (nonatomic, strong)NSString           *skVideoTitle;
 
 /** 播放器容器: 视频播放器，控制器 */
 @property (nonatomic, readonly, strong)UIView   *skContentView;

@@ -29,6 +29,11 @@
 /** 播放器控制器 **/
 @property (nonatomic, strong)SKMovieControlBar      *skMovieControl;
 
+/** 全屏播放器头部titleBar **/
+@property (nonatomic, strong)SKMovieFullScreenTitltBar      *skMovieTitleBar;
+/** 是否出现全屏返回title控制条 默认不出现NO，全屏成功的时候置为YES */
+@property (nonatomic, assign)BOOL   isFullControlTitleBarShow;
+
 @end
 
 @implementation SKMoviePlayer
@@ -94,7 +99,7 @@
     return self;
 }
 
-#pragma mark - 
+#pragma mark - 属性或者其他基础信息
 /** 视频未加载前的播放按钮 **/
 - (void)setupMoviePlayerAndPlay:(UIButton *)aBtn {
     
@@ -116,6 +121,16 @@
         _skUrlString = skUrlString;
         
         [self replacePlayerItem];
+    }
+}
+
+- (void)setSkVideoTitle:(NSString *)skVideoTitle {
+    
+    _skVideoTitle = skVideoTitle;
+    
+    if (_skMovieTitleBar) {
+        
+        _skMovieTitleBar.skFullTitleLabel.text = _skVideoTitle;
     }
 }
 
@@ -148,6 +163,20 @@
         
         /** 添加各类点击事件 **/
         [self addAllTagetHandel];
+    }
+    
+    if (!_skMovieTitleBar) {
+        
+        /** 初始化全屏的title控制器 *** 非全屏隐藏,初始化的时候要隐藏 ** */
+        _skMovieTitleBar = [[SKMovieFullScreenTitltBar alloc] init];
+        _skMovieTitleBar.translatesAutoresizingMaskIntoConstraints = NO;
+        [_skContentView addSubview:_skMovieTitleBar];
+        [self constraintItem:_skMovieTitleBar toItem:_skContentView topMultiplier:1 topConstant:0 bottomMultiplier:0 bottomConstant:0 leftMultiplier:1 leftConstant:0 rightMultiplier:1 rightConstant:0 widthMultiplier:0 width:0 heightMultiplier:0 height:30];
+        _skMovieTitleBar.skFullTitleLabel.text = _skVideoTitle;
+        _skMovieTitleBar.hidden = YES;
+        
+        /** 添加MovieTitleBar各类点击事件 **/
+        [self addTitleBarAllTagetHandel];
     }
 }
 
@@ -395,6 +424,18 @@
     }];;
 }
 
+/** TitleBar的事件 */
+- (void)addTitleBarAllTagetHandel {
+    
+    __weak typeof(self)weakSelf = self;
+    [_skMovieTitleBar addBackHandler:^(id obj) {
+        
+        /** 这里直接使用了全屏按钮的事件，所以：1.设置全屏按钮的selected 2.并要将全屏按钮传过去 */
+        weakSelf.skMovieControl.skFullControl.selected = !weakSelf.skMovieControl.skFullControl.selected;
+        [weakSelf fullScreenSwitch:weakSelf.skMovieControl.skFullControl];
+    }];
+}
+
 /** 全屏回调方法回调，外部控制使用页面跳转的方式 **/
 - (void)fullScreenSwitch:(id)obj {
     
@@ -408,13 +449,18 @@
             
             if (btn.selected) {
                 
+                /** 切换layer大小。注意：当全屏的时候，要将_isFullControlTitleBarShow置为YES，切换回非全屏的时候置为NO，用self.调用  **/
                 if (isComplection) {
                     
                     _skPlayerLayer.frame = [UIScreen mainScreen].bounds;
                     
+                    self.isFullControlTitleBarShow = YES;
+                    
                 }else {
                     
                     _skPlayerLayer.frame = self.bounds;
+                    
+                    self.isFullControlTitleBarShow = NO;
                 }
             }else {
                 
@@ -422,9 +468,13 @@
                     
                     _skPlayerLayer.frame = self.bounds;
                     
+                    self.isFullControlTitleBarShow = NO;
+                    
                 }else {
                     
                     _skPlayerLayer.frame = [UIScreen mainScreen].bounds;
+                    
+                    self.isFullControlTitleBarShow = YES;
                 }
             }
         }];
@@ -498,12 +548,24 @@
 }
 
 #pragma mark - 隐藏或显示控制器
+- (void)setIsFullControlTitleBarShow:(BOOL)isFullControlTitleBarShow {
+    
+    _isFullControlTitleBarShow = isFullControlTitleBarShow;
+    
+    _skMovieTitleBar.hidden = !_isFullControlTitleBarShow;
+}
+
 /** 隐藏或显示控制器 **/
 - (void)tapHideOrShow:(id)obj {
     
     showOrHidenControlBar = !showOrHidenControlBar;
     
     _skMovieControl.hidden = showOrHidenControlBar;
+    
+    if (_isFullControlTitleBarShow) {
+        
+        _skMovieTitleBar.hidden = showOrHidenControlBar;
+    }
 }
 
 #pragma mark -

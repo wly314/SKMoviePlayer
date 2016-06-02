@@ -22,13 +22,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
+//    http://stream.tiantianshangke.com/1/nce/20160330a7225fe507ff28c2f8b4b25518e48360.mp4
     skMoviePlayer = [[SKMoviePlayer alloc] initWithFrame:CGRectMake(0, 100, self.view.bounds.size.width, 200) playerUrlPath:@"http://60.220.194.93/source.vickeynce.com/201605053fc0a48a3bf8e3da9365fd072e6b80fb.mp4?wsiphost=local"];
     skMoviePlayer.delegate = self;
     [self.view addSubview:skMoviePlayer];
     
     [skMoviePlayer setSkPlayerSize:CGSizeMake(self.view.bounds.size.width, 200)];
     skMoviePlayer.isCanDownload = NO;
+    skMoviePlayer.skVideoTitle = @"你咋不叫我杀个人啊？";
 }
 
 - (void)didReceiveMemoryWarning {

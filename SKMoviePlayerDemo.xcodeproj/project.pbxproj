@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B90250DA1D00337A008630C8 /* SKMovieFullScreenTitltBar.m in Sources */ = {isa = PBXBuildFile; fileRef = B90250D91D00337A008630C8 /* SKMovieFullScreenTitltBar.m */; };
+		B90250DD1D004222008630C8 /* full_return@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B90250DB1D004222008630C8 /* full_return@2x.png */; };
+		B90250DE1D004222008630C8 /* full_return@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B90250DC1D004222008630C8 /* full_return@3x.png */; };
 		B949845C1CFE780700A760E6 /* full_dowload@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B949845A1CFE780700A760E6 /* full_dowload@3x.png */; };
 		B949845D1CFE780700A760E6 /* full_dowload@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B949845B1CFE780700A760E6 /* full_dowload@2x.png */; };
 		B94984681CFEBDBB00A760E6 /* SKFullScreenView.m in Sources */ = {isa = PBXBuildFile; fileRef = B94984671CFEBDBB00A760E6 /* SKFullScreenView.m */; };
@@ -59,6 +62,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B90250D81D00337A008630C8 /* SKMovieFullScreenTitltBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMovieFullScreenTitltBar.h; sourceTree = "<group>"; };
+		B90250D91D00337A008630C8 /* SKMovieFullScreenTitltBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMovieFullScreenTitltBar.m; sourceTree = "<group>"; };
+		B90250DB1D004222008630C8 /* full_return@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "full_return@2x.png"; sourceTree = "<group>"; };
+		B90250DC1D004222008630C8 /* full_return@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "full_return@3x.png"; sourceTree = "<group>"; };
 		B949845A1CFE780700A760E6 /* full_dowload@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "full_dowload@3x.png"; sourceTree = "<group>"; };
 		B949845B1CFE780700A760E6 /* full_dowload@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "full_dowload@2x.png"; sourceTree = "<group>"; };
 		B94984661CFEBDBB00A760E6 /* SKFullScreenView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFullScreenView.h; sourceTree = "<group>"; };
@@ -201,6 +208,8 @@
 				B97FB59A1CFD3D5A0080413A /* SKMoviePlayer.m */,
 				B9B0B4801CFD65C8000DAA20 /* SKMovieControlBar.h */,
 				B9B0B4811CFD65C8000DAA20 /* SKMovieControlBar.m */,
+				B90250D81D00337A008630C8 /* SKMovieFullScreenTitltBar.h */,
+				B90250D91D00337A008630C8 /* SKMovieFullScreenTitltBar.m */,
 				B94984661CFEBDBB00A760E6 /* SKFullScreenView.h */,
 				B94984671CFEBDBB00A760E6 /* SKFullScreenView.m */,
 				B94984691CFEBDE700A760E6 /* SKFullScreenViewController.h */,
@@ -212,6 +221,8 @@
 		B9B0B4831CFD9A9B000DAA20 /* SKImages */ = {
 			isa = PBXGroup;
 			children = (
+				B90250DB1D004222008630C8 /* full_return@2x.png */,
+				B90250DC1D004222008630C8 /* full_return@3x.png */,
 				B94984961CFEF1A200A760E6 /* play_timelinefull@2x.png */,
 				B94984971CFEF1A200A760E6 /* play_timelinefull@3x.png */,
 				B94984981CFEF1A200A760E6 /* play_timeline@2x.png */,
@@ -348,6 +359,7 @@
 				B949845D1CFE780700A760E6 /* full_dowload@2x.png in Resources */,
 				B97FB5751CFD330D0080413A /* LaunchScreen.storyboard in Resources */,
 				B94984901CFEDDCB00A760E6 /* pause_fullscreen@2x.png in Resources */,
+				B90250DE1D004222008630C8 /* full_return@3x.png in Resources */,
 				B94984761CFED27A00A760E6 /* normal_full@2x.png in Resources */,
 				B949848D1CFEDDBC00A760E6 /* play_fullscreen@3x.png in Resources */,
 				B94984911CFEDDCB00A760E6 /* pause_fullscreen@3x.png in Resources */,
@@ -357,6 +369,7 @@
 				B949847A1CFED27A00A760E6 /* normal_play@2x.png in Resources */,
 				B949849B1CFEF1A200A760E6 /* play_timelinefull@3x.png in Resources */,
 				B94984741CFED27A00A760E6 /* full_normal@2x.png in Resources */,
+				B90250DD1D004222008630C8 /* full_return@2x.png in Resources */,
 				B97FB5721CFD330D0080413A /* Assets.xcassets in Resources */,
 				B94984791CFED27A00A760E6 /* normal_pause@3x.png in Resources */,
 				B97FB5701CFD330D0080413A /* Main.storyboard in Resources */,
@@ -391,6 +404,7 @@
 				B97FB59B1CFD3D5A0080413A /* SKMoviePlayer.m in Sources */,
 				B9B0B4821CFD65C8000DAA20 /* SKMovieControlBar.m in Sources */,
 				B94984681CFEBDBB00A760E6 /* SKFullScreenView.m in Sources */,
+				B90250DA1D00337A008630C8 /* SKMovieFullScreenTitltBar.m in Sources */,
 				B97FB56A1CFD330D0080413A /* AppDelegate.m in Sources */,
 				B97FB5671CFD330D0080413A /* main.m in Sources */,
 			);

@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMoviePlayer.m"
-            timestampString = "486531337.234846"
+            timestampString = "486558066.900984"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "487"
-            endingLineNumber = "487"
+            startingLineNumber = "537"
+            endingLineNumber = "537"
             landmarkName = "-setSkFullScreenVC:"
             landmarkType = "5">
          </BreakpointContent>
@@ -36,11 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMoviePlayer.m"
-            timestampString = "486531337.234846"
+            timestampString = "486557906.091738"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
             landmarkName = "-observeValueForKeyPath:ofObject:change:context:"
             landmarkType = "5">
          </BreakpointContent>
@@ -51,13 +51,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKFullScreenViewController.m"
-            timestampString = "486472602.356274"
+            filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMovieFullScreenTitltBar.m"
+            timestampString = "486557032.740935"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23"
-            landmarkName = "-loadView"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "-initSubviews"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -68,12 +68,76 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMoviePlayer.m"
-            timestampString = "486531337.234846"
+            timestampString = "486558066.900984"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "217"
-            endingLineNumber = "217"
-            landmarkName = "-setIsCanDownload:"
+            startingLineNumber = "442"
+            endingLineNumber = "442"
+            landmarkName = "-fullScreenSwitch:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMoviePlayer.m"
+            timestampString = "486558066.900984"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "448"
+            endingLineNumber = "448"
+            landmarkName = "-fullScreenSwitch:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[SKMoviePlayer fullScreenSwitch:]"
+                  moduleName = "SKMoviePlayerDemo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/anakin/Desktop/SKMoviePlayer/SKMoviePlayerDemo/SKMoviePlayer/SKMoviePlayer.m"
+                  timestampString = "486558066.968636"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "448"
+                  endingLineNumber = "448"
+                  offsetFromSymbolStart = "135">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__34-[SKMoviePlayer fullScreenSwitch:]_block_invoke"
+                  moduleName = "SKMoviePlayerDemo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/anakin/Desktop/SKMoviePlayer/SKMoviePlayerDemo/SKMoviePlayer/SKMoviePlayer.m"
+                  timestampString = "486558066.968986"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "448"
+                  endingLineNumber = "448"
+                  offsetFromSymbolStart = "18">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SKMoviePlayerDemo/SKMoviePlayer/SKMoviePlayer.m"
+            timestampString = "486558066.900984"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "450"
+            endingLineNumber = "450"
+            landmarkName = "-fullScreenSwitch:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
