@@ -22,9 +22,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-//    http://stream.tiantianshangke.com/1/nce/20160330a7225fe507ff28c2f8b4b25518e48360.mp4
-//    http://60.220.194.93/source.vickeynce.com/201605053fc0a48a3bf8e3da9365fd072e6b80fb.mp4?wsiphost=local
-    skMoviePlayer = [[SKMoviePlayer alloc] initWithFrame:CGRectMake(0, 100, self.view.bounds.size.width, 200) playerUrlPath:@"http://stream.tiantianshangke.com/1/nce/20160330a7225fe507ff28c2f8b4b25518e48360.mp4"];
+
+    skMoviePlayer = [[SKMoviePlayer alloc] initWithFrame:CGRectMake(0, 100, self.view.bounds.size.width, 200) playerUrlPath:@"xxxx"];
     skMoviePlayer.delegate = self;
     [self.view addSubview:skMoviePlayer];
     
@@ -47,35 +46,24 @@
 
 #pragma mark - 播放器代理
 #pragma mark 懒加载代码
-
-
 - (void)moviePlayer:(SKMoviePlayer *)aSkMoviePlayer fullScreenSwitchOrientation:(BOOL)isFull complection:(SKFullScreenCompletion)complection {
     
     if(isFull) {
         
         [self presentViewController:aSkMoviePlayer.skFullScreenVC animated:NO completion:^{
             
+            [aSkMoviePlayer removeFromSuperview];
             [aSkMoviePlayer.skFullScreenVC.view addSubview:aSkMoviePlayer];
-            aSkMoviePlayer.center = aSkMoviePlayer.skFullScreenVC.view.center;
             
-            [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                
-                aSkMoviePlayer.frame = [UIScreen mainScreen].bounds;
-                complection(YES);
-                
-            } completion:nil];
+            complection(YES, [UIScreen mainScreen].bounds);
         }];
         
     }else {
         [aSkMoviePlayer.skFullScreenVC dismissViewControllerAnimated:NO completion:^{
             
+            [aSkMoviePlayer removeFromSuperview];
             [self.view addSubview:aSkMoviePlayer];
-            [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                
-                skMoviePlayer.frame = CGRectMake(0, 100, self.view.bounds.size.width, 200);
-                complection(YES);
-                
-            } completion:nil];
+            complection(YES, CGRectMake(0, 100, self.view.bounds.size.width, 200));
         }];
     }
 }

@@ -445,34 +445,32 @@
     
     if ([_delegate respondsToSelector:@selector(moviePlayer:fullScreenSwitchOrientation: complection:)]) {
         
-        [_delegate moviePlayer:weakSelf fullScreenSwitchOrientation:btn.selected complection:^(BOOL isComplection){
+        [_delegate moviePlayer:weakSelf fullScreenSwitchOrientation:btn.selected complection:^(BOOL isComplection, CGRect layerFrame){
+            
+            [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+                
+                self.frame = layerFrame;
+                _skPlayerLayer.frame = self.layer.bounds;
+                
+            } completion:nil];
             
             if (btn.selected) {
                 
                 /** 切换layer大小。注意：当全屏的时候，要将_isFullControlTitleBarShow置为YES，切换回非全屏的时候置为NO，用self.调用  **/
                 if (isComplection) {
                     
-                    _skPlayerLayer.frame = [UIScreen mainScreen].bounds;
-                    
                     self.isFullControlTitleBarShow = YES;
                     
                 }else {
-                    
-                    _skPlayerLayer.frame = self.bounds;
-                    
                     self.isFullControlTitleBarShow = NO;
                 }
             }else {
                 
                 if (isComplection) {
                     
-                    _skPlayerLayer.frame = self.bounds;
-                    
                     self.isFullControlTitleBarShow = NO;
                     
                 }else {
-                    
-                    _skPlayerLayer.frame = [UIScreen mainScreen].bounds;
                     
                     self.isFullControlTitleBarShow = YES;
                 }
@@ -577,6 +575,10 @@
     [_skPlayerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp" context:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:_skPlayerItem];
+    
+    [_skPlayerLayer removeFromSuperlayer];
+    _skPlayer = nil;
+    _skPlayerItem = nil;
 }
 
 #pragma mark - 依赖于superView的约束

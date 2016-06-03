@@ -1,5 +1,7 @@
 # SKMoviePlayerDemo
 
+### 使用方法：
+
 ```
 #import "ViewController.h"
 
@@ -17,13 +19,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
-    skMoviePlayer = [[SKMoviePlayer alloc] initWithFrame:CGRectMake(0, 100, self.view.bounds.size.width, 200) playerUrlPath:@"http://60.220.194.93/source.vickeynce.com/201605053fc0a48a3bf8e3da9365fd072e6b80fb.mp4?wsiphost=local"];
+
+    skMoviePlayer = [[SKMoviePlayer alloc] initWithFrame:CGRectMake(0, 100, self.view.bounds.size.width, 200) playerUrlPath:@"xxxx"];
     skMoviePlayer.delegate = self;
     [self.view addSubview:skMoviePlayer];
     
     [skMoviePlayer setSkPlayerSize:CGSizeMake(self.view.bounds.size.width, 200)];
     skMoviePlayer.isCanDownload = NO;
+    skMoviePlayer.skVideoTitle = @"你咋不叫我杀个人啊？";
 }
 
 - (void)didReceiveMemoryWarning {
@@ -34,50 +37,36 @@
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
-    
-//    [skMoviePlayer setSkUrlString:@"http://60.220.194.93/source.vickeynce.com/201605053fc0a48a3bf8e3da9365fd072e6b80fb.mp4?wsiphost=local"];
 }
 
 #pragma mark - 播放器代理
 #pragma mark 懒加载代码
-
-
 - (void)moviePlayer:(SKMoviePlayer *)aSkMoviePlayer fullScreenSwitchOrientation:(BOOL)isFull complection:(SKFullScreenCompletion)complection {
     
     if(isFull) {
         
         [self presentViewController:aSkMoviePlayer.skFullScreenVC animated:NO completion:^{
             
+            [aSkMoviePlayer removeFromSuperview];
             [aSkMoviePlayer.skFullScreenVC.view addSubview:aSkMoviePlayer];
-            aSkMoviePlayer.center = aSkMoviePlayer.skFullScreenVC.view.center;
             
-            [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                
-                aSkMoviePlayer.frame = [UIScreen mainScreen].bounds;
-                complection(YES);
-                
-            } completion:nil];
+            complection(YES, [UIScreen mainScreen].bounds);
         }];
         
     }else {
         [aSkMoviePlayer.skFullScreenVC dismissViewControllerAnimated:NO completion:^{
             
+            [aSkMoviePlayer removeFromSuperview];
             [self.view addSubview:aSkMoviePlayer];
-            [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-                
-                skMoviePlayer.frame = CGRectMake(0, 100, self.view.bounds.size.width, 200);
-                complection(YES);
-                
-            } completion:nil];
+            complection(YES, CGRectMake(0, 100, self.view.bounds.size.width, 200));
         }];
     }
 }
 
-- (void)dealloc {
-    
-    [skMoviePlayer removeFromSuperview];
-    skMoviePlayer = nil;
+```
 
-}
+### 注意事项:
+```
+必须是addSubview添加播放器SKMoviePlayer。
 
 ```

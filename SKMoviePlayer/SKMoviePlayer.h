@@ -14,8 +14,8 @@
 /** 全屏视图控制器 */
 #import "SKFullScreenViewController.h"
 
-/** 用于回调是否全屏已经完成,通过判断处理AVPlayer的layer大小 **/
-typedef void (^SKFullScreenCompletion)(BOOL isComplection);
+/** 用于回调是否全屏已经完成,通过判断处理AVPlayer的layer大小 layerFrame:重设大小 **/
+typedef void (^SKFullScreenCompletion)(BOOL isComplection, CGRect layerFrame);
 /** 用于回调是否该视频已经下载 **/
 typedef void (^SKFullDownloaded)(BOOL isDownloaded);
 
@@ -65,7 +65,7 @@ typedef void (^SKFullDownloaded)(BOOL isDownloaded);
 @protocol SKMoviePlayerDelegate <NSObject>
 
 @optional
-/** isFull ：是否屏幕 */
+/** isFull ：是否屏幕 使用方法见下 */
 - (void)moviePlayer:(SKMoviePlayer *)aSkMoviePlayer fullScreenSwitchOrientation:(BOOL)isFull complection:(SKFullScreenCompletion)complection;
 
 /** 视频下载 downloaded:视频已经下载过了／正在下载 */
@@ -73,3 +73,32 @@ typedef void (^SKFullDownloaded)(BOOL isDownloaded);
 
 @end
 
+/**
+ *  moviePlayer: fullScreenSwitchOrientation: 使用方法
+ *
+ *      1. [self.view addSubview:aSkMoviePlayer];将SkMoviePlayer添加到新的View上
+ *      2. complection(YES, [UIScreen mainScreen].bounds);回调返回播放器frame大小
+ */
+/*
+ 
+ - (void)moviePlayer:(SKMoviePlayer *)aSkMoviePlayer fullScreenSwitchOrientation:(BOOL)isFull complection:(SKFullScreenCompletion)complection {
+ 
+    if(isFull) {
+ 
+        [self presentViewController:aSkMoviePlayer.skFullScreenVC animated:NO completion:^{
+ 
+            [aSkMoviePlayer.skFullScreenVC.view addSubview:aSkMoviePlayer];
+ 
+            complection(YES, [UIScreen mainScreen].bounds);
+        }];
+ 
+    }else {
+ 
+        [aSkMoviePlayer.skFullScreenVC dismissViewControllerAnimated:NO completion:^{
+ 
+            [self.view addSubview:aSkMoviePlayer];
+            complection(YES, CGRectMake(0, 100, self.view.bounds.size.width, 200));
+        }];
+    }
+ }
+ */
