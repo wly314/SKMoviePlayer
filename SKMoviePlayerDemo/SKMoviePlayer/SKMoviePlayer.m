@@ -577,6 +577,10 @@
     [_skPlayerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp" context:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:_skPlayerItem];
+    
+    [_skPlayerLayer removeFromSuperlayer];
+    _skPlayer = nil;
+    _skPlayerItem = nil;
 }
 
 #pragma mark - 依赖于superView的约束
