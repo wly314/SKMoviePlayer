@@ -71,6 +71,9 @@ typedef void (^SKFullDownloaded)(BOOL isDownloaded);
 /** 视频下载 downloaded:视频已经下载过了／正在下载 */
 - (void)moviePlayer:(SKMoviePlayer *)aSkMoviePlayer videoDownloaded:(SKFullDownloaded)downloaded;
 
+/** 视频播放结束 **/
+- (void)moviePlayerVideoPlayEnd:(SKMoviePlayer *)aSkMoviePlayer;
+
 @end
 
 /**

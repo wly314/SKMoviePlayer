@@ -23,7 +23,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
 
-    skMoviePlayer = [[SKMoviePlayer alloc] initWithFrame:CGRectMake(0, 100, self.view.bounds.size.width, 200) playerUrlPath:@"xxxx"];
+    skMoviePlayer = [[SKMoviePlayer alloc] initWithFrame:CGRectMake(0, 100, self.view.bounds.size.width, 200) playerUrlPath:@"http://60.220.194.93/source.vickeynce.com/201605053fc0a48a3bf8e3da9365fd072e6b80fb.mp4?wsiphost=local"];
     skMoviePlayer.delegate = self;
     [self.view addSubview:skMoviePlayer];
     
@@ -55,6 +55,7 @@
             [aSkMoviePlayer removeFromSuperview];
             [aSkMoviePlayer.skFullScreenVC.view addSubview:aSkMoviePlayer];
             
+            aSkMoviePlayer.frame = [UIScreen mainScreen].bounds;
             complection(YES, [UIScreen mainScreen].bounds);
         }];
         
@@ -63,9 +64,17 @@
             
             [aSkMoviePlayer removeFromSuperview];
             [self.view addSubview:aSkMoviePlayer];
+            
+            aSkMoviePlayer.frame = CGRectMake(0, 100, self.view.bounds.size.width, 200);
             complection(YES, CGRectMake(0, 100, self.view.bounds.size.width, 200));
         }];
     }
+}
+
+/** 视频播放结束 **/
+- (void)moviePlayerVideoPlayEnd:(SKMoviePlayer *)aSkMoviePlayer {
+    
+    
 }
 
 - (void)dealloc {

@@ -347,13 +347,16 @@
 }
 
 - (void)moviePlayDidEnd:(NSNotification *)notification {
-   
-    NSLog(@"Play end");
     
     [_skPlayer seekToTime:kCMTimeZero completionHandler:^(BOOL finished) {
         
         self.skMovieControl.skPlayControl.selected = NO;
     }];
+    
+    if ([_delegate respondsToSelector:@selector(moviePlayerVideoPlayEnd:)]) {
+        
+        [_delegate moviePlayerVideoPlayEnd:self];
+    }
 }
 
 /** 播放时间转换 **/
@@ -449,7 +452,6 @@
             
             [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
                 
-                self.frame = layerFrame;
                 _skPlayerLayer.frame = self.layer.bounds;
                 
             } completion:nil];
