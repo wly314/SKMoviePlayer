@@ -40,8 +40,6 @@
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
-    
-//    [skMoviePlayer setSkUrlString:@"http://60.220.194.93/source.vickeynce.com/201605053fc0a48a3bf8e3da9365fd072e6b80fb.mp4?wsiphost=local"];
 }
 
 #pragma mark - 播放器代理

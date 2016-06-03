@@ -452,7 +452,7 @@
             
             [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
                 
-                _skPlayerLayer.frame = self.layer.bounds;
+                _skPlayerLayer.frame = CGRectMake(0, 0, layerFrame.size.width, layerFrame.size.height);
                 
             } completion:nil];
             
