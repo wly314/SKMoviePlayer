@@ -11,13 +11,16 @@
 @interface SKMoviePlayer () {
     
     /** 播放状态，手动控制。缓存播放完的时候可能会停止播放，通过监听状态，纪录状态，再次播放 **/
-    BOOL        playStatus;//0 播放 1 停止
+    BOOL                    playStatus;//0 播放 1 停止
     
     /** 载入视频小菊花 */
     UIActivityIndicatorView *loadActivityIndicator;
     
     /** 显示或者隐藏控制条 默认0显示 */
-    BOOL        showOrHidenControlBar;
+    BOOL                    showOrHidenControlBar;
+    
+    /** 主屏幕的播放按钮 **/
+    UIButton                *mainPlayButton;
 }
 
 /** 播放器 */
@@ -91,6 +94,7 @@
         [self constraintItem:playBtn toItem:_skContentView topMultiplier:0 topConstant:0 bottomMultiplier:0 bottomConstant:0 leftMultiplier:0 leftConstant:0 rightMultiplier:0 rightConstant:0 widthMultiplier:0 width:50 heightMultiplier:0 height:50];
         [self constraintCneterXOfItem:playBtn toItem:_skContentView];
         [self constraintCneterYOfItem:playBtn toItem:_skContentView];
+        mainPlayButton = playBtn;
         
         /** 播放控制器 加载视频的动画 */
         [self initPlayerView];
@@ -117,6 +121,9 @@
     
     /** 如果已经存在 需要替换AVPlayerItem */
     if (skUrlString && skUrlString.length > 0) {
+        
+        mainPlayButton.hidden = YES;
+        [loadActivityIndicator startAnimating];
         
         _skUrlString = skUrlString;
         
