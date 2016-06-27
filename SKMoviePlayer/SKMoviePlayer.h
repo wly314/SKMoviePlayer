@@ -31,6 +31,9 @@ typedef void (^SKFullDownloaded)(BOOL isDownloaded);
 /** 视频地址，可以在需要的时候切换视频地址，不用重新创建 */
 @property (nonatomic, strong)NSString           *skUrlString;
 
+/** 视频URL地址来源 本地 YES ； 网络 NO */
+@property (nonatomic, assign)BOOL               skUrlFromLocal;
+
 /** 视频名字 **/
 @property (nonatomic, strong)NSString           *skVideoTitle;
 
@@ -58,6 +61,9 @@ typedef void (^SKFullDownloaded)(BOOL isDownloaded);
 /** 是否可以下载，下载按钮是否隐藏 */
 @property (nonatomic, assign)BOOL  isCanDownload;
 
+/** 直接设置全屏状态：即在播放的时候就是全屏 */
+- (void)toFullScreentWhenStart:(SKMoviePlayer *)skMoviePlayer;
+
 @end
 
 
@@ -70,6 +76,9 @@ typedef void (^SKFullDownloaded)(BOOL isDownloaded);
 
 /** 视频下载 downloaded:视频已经下载过了／正在下载 */
 - (void)moviePlayer:(SKMoviePlayer *)aSkMoviePlayer videoDownloaded:(SKFullDownloaded)downloaded;
+
+/** 视频播放结束 **/
+- (void)moviePlayerVideoPlayEnd:(SKMoviePlayer *)aSkMoviePlayer;
 
 @end
 

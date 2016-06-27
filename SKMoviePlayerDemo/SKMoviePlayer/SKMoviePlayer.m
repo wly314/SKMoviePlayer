@@ -95,7 +95,6 @@
         [self constraintCneterXOfItem:playBtn toItem:_skContentView];
         [self constraintCneterYOfItem:playBtn toItem:_skContentView];
         mainPlayButton = playBtn;
-        
         /** 播放控制器 加载视频的动画 */
         [self initPlayerView];
     }
@@ -107,13 +106,15 @@
 /** 视频未加载前的播放按钮 **/
 - (void)setupMoviePlayerAndPlay:(UIButton *)aBtn {
     
-    aBtn.selected = !aBtn.selected;
-    
-    if (_skUrlString) {
+    if (_skUrlString && _skUrlString.length > 0) {
+        
+        aBtn.selected = !aBtn.selected;
         
         aBtn.hidden = YES;
         [loadActivityIndicator startAnimating];
         [self replacePlayerItem];
+    }else {
+        
     }
 }
 
@@ -126,6 +127,15 @@
         [loadActivityIndicator startAnimating];
         
         _skUrlString = skUrlString;
+        
+        [_skPlayer pause];
+        [_skPlayerLayer removeFromSuperlayer];
+        _skPlayerLayer = nil;
+        _skPlayer = nil;
+        [_skMovieControl removeFromSuperview];
+        _skMovieControl = nil;
+        [_skMovieTitleBar removeFromSuperview];
+        _skMovieTitleBar = nil;
         
         [self replacePlayerItem];
     }
@@ -214,7 +224,15 @@
         
         [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:_skPlayerItem];
     }
-    _skPlayerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:_skUrlString]];
+    
+    /** 如果替换为stop作为地址 则不再播放 */
+    if ([_skUrlString isEqualToString:@"stop"]) {
+        
+        return;
+    }
+    
+    NSURL *url = (_skUrlFromLocal) ? ([NSURL fileURLWithPath:_skUrlString]) : ([NSURL URLWithString:_skUrlString]);
+    _skPlayerItem = [AVPlayerItem playerItemWithURL:url];
     /** 监听status属性 */
     [_skPlayerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
     /** 监听loadedTimeRanges属性 */
@@ -369,15 +387,22 @@
 /** 播放时间转换 **/
 - (NSString *)convertTime:(CGFloat)second {
     
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:second];
-    if (second/3600 >= 1) {
-        
-        [[self dateFormatter] setDateFormat:@"HH:mm:ss"];
-    } else {
-        [[self dateFormatter] setDateFormat:@"mm:ss"];
-    }
-    NSString *showtimeNew = [[self dateFormatter] stringFromDate:date];
-    return showtimeNew;
+    int mm = (int)second/60;
+    int ss = (int)second%60;
+    
+    NSString *timeStr = [NSString stringWithFormat:@"%02d:%02d", mm, ss];
+    
+    return timeStr;
+    
+//    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:second];
+//    if (second/3600 >= 1) {
+//        
+//        [[self dateFormatter] setDateFormat:@"mm:ss"];
+//    } else {
+//        [[self dateFormatter] setDateFormat:@"mm:ss"];
+//    }
+//    NSString *showtimeNew = [[self dateFormatter] stringFromDate:date];
+//    return showtimeNew;
 }
 
 - (NSDateFormatter *)dateFormatter {
@@ -444,6 +469,17 @@
         weakSelf.skMovieControl.skFullControl.selected = !weakSelf.skMovieControl.skFullControl.selected;
         [weakSelf fullScreenSwitch:weakSelf.skMovieControl.skFullControl];
     }];
+}
+
+/** 直接设置全屏状态：即在播放的时候就是全屏 */
+- (void)toFullScreentWhenStart:(SKMoviePlayer *)skMoviePlayer {
+    
+    /** 全屏的时候 先手动创建一个控制bar 然后将全屏按钮置为选中状态 出现titleBar */
+    [self initControlBar];
+    skMoviePlayer.skMovieControl.skFullControl.selected = YES;
+//    self.isFullControlTitleBarShow = YES;
+//    _skPlayerLayer.frame = CGRectMake(0, 0, skMoviePlayer.width, skMoviePlayer.height);
+    [self fullScreenSwitch:skMoviePlayer.skMovieControl.skFullControl];
 }
 
 /** 全屏回调方法回调，外部控制使用页面跳转的方式 **/
@@ -585,9 +621,14 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:_skPlayerItem];
     
+    [_skPlayer pause];
     [_skPlayerLayer removeFromSuperlayer];
+    [_skMovieControl removeFromSuperview];
+    [_skMovieTitleBar removeFromSuperview];
     _skPlayer = nil;
+    _skPlayerLayer = nil;
     _skPlayerItem = nil;
+    _skMovieTitleBar = nil;
 }
 
 #pragma mark - 依赖于superView的约束

@@ -25,8 +25,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "537"
             endingLineNumber = "537"
-            landmarkName = "-setSkFullScreenVC:"
-            landmarkType = "5">
+            landmarkName = "@implementation SKMoviePlayer"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -41,7 +41,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "266"
             endingLineNumber = "266"
-            landmarkName = "-observeValueForKeyPath:ofObject:change:context:"
+            landmarkName = "-replacePlayerItem"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -121,7 +121,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "453"
             endingLineNumber = "453"
-            landmarkName = "-fullScreenSwitch:"
+            landmarkName = "-addAllTagetHandel"
             landmarkType = "5">
             <Locations>
                <Location

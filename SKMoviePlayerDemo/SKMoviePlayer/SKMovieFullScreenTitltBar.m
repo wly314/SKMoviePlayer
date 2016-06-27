@@ -40,7 +40,7 @@
     [_skBackFullControl setImage:nbackImgs forState:UIControlStateNormal];
     [_skBackFullControl setImage:nbackImgs forState:UIControlStateSelected];
     [self addSubview:_skBackFullControl];
-    [self constraintItem:_skBackFullControl toItem:self topMultiplier:0 topConstant:0 bottomMultiplier:0 bottomConstant:0 leftMultiplier:1 leftConstant:20 rightMultiplier:0 rightConstant:0 widthMultiplier:0 width:(nbackImgs.size.width) heightMultiplier:0 height:(nbackImgs.size.height)];
+    [self constraintItem:_skBackFullControl toItem:self topMultiplier:0 topConstant:0 bottomMultiplier:0 bottomConstant:0 leftMultiplier:1 leftConstant:10 rightMultiplier:0 rightConstant:0 widthMultiplier:0 width:(nbackImgs.size.width*2+10) heightMultiplier:0 height:(nbackImgs.size.height)];
     [self constraintCneterYOfItem:_skBackFullControl toItem:self];
     
     _skFullTitleLabel = [[UILabel alloc] init];
