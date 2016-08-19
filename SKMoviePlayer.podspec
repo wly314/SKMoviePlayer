@@ -18,9 +18,10 @@ SKMoviePlayer一个在完善中的播放器－基于AVPlayer
   s.platform     = :ios, "7.0"
 
   s.source       = { :git => "https://github.com/wly314/SKMoviePlayer.git", :tag => "0.0.2" }
-
+  
   s.source_files  = "SKMoviePlayer", "*.{h,m}"
-
+  s.resources    = 'SKMoviePlayer/SKImages/*.{png,jpg}'
+  
   s.requires_arc = true
 
 end
