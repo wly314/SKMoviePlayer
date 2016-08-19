@@ -87,9 +87,9 @@
         playBtn.translatesAutoresizingMaskIntoConstraints = NO;
         [_skContentView addSubview:playBtn];
         playBtn.backgroundColor = [UIColor clearColor];
-        [playBtn setImage:[UIImage imageNamed:@"play_fullscreen"] forState:UIControlStateNormal];
-        [playBtn setImage:[UIImage imageNamed:@"pause_fullscreen"] forState:UIControlStateHighlighted];
-        [playBtn setImage:[UIImage imageNamed:@"pause_fullscreen"] forState:UIControlStateSelected];
+        [playBtn setImage:[UIImage imageNamed:@"sk_play_fullscreen"] forState:UIControlStateNormal];
+        [playBtn setImage:[UIImage imageNamed:@"sk_pause_fullscreen"] forState:UIControlStateHighlighted];
+        [playBtn setImage:[UIImage imageNamed:@"sk_pause_fullscreen"] forState:UIControlStateSelected];
         [playBtn addTarget:self action:@selector(setupMoviePlayerAndPlay:) forControlEvents:UIControlEventTouchUpInside];
         [self constraintItem:playBtn toItem:_skContentView topMultiplier:0 topConstant:0 bottomMultiplier:0 bottomConstant:0 leftMultiplier:0 leftConstant:0 rightMultiplier:0 rightConstant:0 widthMultiplier:0 width:50 heightMultiplier:0 height:50];
         [self constraintCneterXOfItem:playBtn toItem:_skContentView];

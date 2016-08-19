@@ -36,7 +36,7 @@
     _skBackFullControl.backgroundColor = [UIColor clearColor];
     [_skBackFullControl addTarget:self action:@selector(backButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     _skBackFullControl.translatesAutoresizingMaskIntoConstraints = NO;
-    UIImage *nbackImgs = [UIImage imageNamed:@"full_return"];
+    UIImage *nbackImgs = [UIImage imageNamed:@"sk_full_return"];
     [_skBackFullControl setImage:nbackImgs forState:UIControlStateNormal];
     [_skBackFullControl setImage:nbackImgs forState:UIControlStateSelected];
     [self addSubview:_skBackFullControl];

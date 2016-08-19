@@ -36,8 +36,8 @@
     _skPlayControl.backgroundColor = [UIColor clearColor];
     [_skPlayControl addTarget:self action:@selector(playButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     _skPlayControl.translatesAutoresizingMaskIntoConstraints = NO;
-    [_skPlayControl setImage:[UIImage imageNamed:@"normal_play"] forState:UIControlStateNormal];
-    [_skPlayControl setImage:[UIImage imageNamed:@"normal_pause"] forState:UIControlStateSelected];
+    [_skPlayControl setImage:[UIImage imageNamed:@"sk_normal_play"] forState:UIControlStateNormal];
+    [_skPlayControl setImage:[UIImage imageNamed:@"sk_normal_pause"] forState:UIControlStateSelected];
     [self addSubview:_skPlayControl];
     [self constraintItem:_skPlayControl toItem:self topMultiplier:1 topConstant:5 bottomMultiplier:1 bottomConstant:-5 leftMultiplier:1 leftConstant:20 rightMultiplier:0 rightConstant:0 widthMultiplier:0 width:20 heightMultiplier:0 height:0];
     
@@ -45,14 +45,14 @@
     _skFullControl.backgroundColor = [UIColor clearColor];
     [_skFullControl addTarget:self action:@selector(fullScreenButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     _skFullControl.translatesAutoresizingMaskIntoConstraints = NO;
-    [_skFullControl setImage:[UIImage imageNamed:@"normal_full"] forState:UIControlStateNormal];
-    [_skFullControl setImage:[UIImage imageNamed:@"full_normal"] forState:UIControlStateSelected];
+    [_skFullControl setImage:[UIImage imageNamed:@"sk_normal_full"] forState:UIControlStateNormal];
+    [_skFullControl setImage:[UIImage imageNamed:@"sk_full_normal"] forState:UIControlStateSelected];
     [self addSubview:_skFullControl];
     [self constraintItem:_skFullControl toItem:self topMultiplier:1 topConstant:5 bottomMultiplier:1 bottomConstant:-5 leftMultiplier:0 leftConstant:0 rightMultiplier:1 rightConstant:-20 widthMultiplier:0 width:20 heightMultiplier:0 height:0];
     
     _skDownloadControl = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_skDownloadControl setImage:[UIImage imageNamed:@"full_dowload"] forState:UIControlStateNormal];
-    [_skDownloadControl setImage:[UIImage imageNamed:@"full_dowload"] forState:UIControlStateSelected];
+    [_skDownloadControl setImage:[UIImage imageNamed:@"sk_full_dowload"] forState:UIControlStateNormal];
+    [_skDownloadControl setImage:[UIImage imageNamed:@"sk_full_dowload"] forState:UIControlStateSelected];
     _skDownloadControl.translatesAutoresizingMaskIntoConstraints = NO;
     [_skDownloadControl addTarget:self action:@selector(downloadButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_skDownloadControl];
@@ -99,12 +99,12 @@
     [self addConstraint:[NSLayoutConstraint constraintWithItem:skBardurationSlider attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_skTotalTimeLabel attribute:NSLayoutAttributeLeft multiplier:1 constant:-5]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:skBardurationSlider attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_skCurrentTimeLabel attribute:NSLayoutAttributeRight multiplier:1 constant:5]];
     
-    UIImage *thumbImage = [UIImage imageNamed:@"play_current_point.png"];
+    UIImage *thumbImage = [UIImage imageNamed:@"sk_play_current_point.png"];
     [skBardurationSlider setThumbImage:thumbImage forState:UIControlStateHighlighted];
     [skBardurationSlider setThumbImage:thumbImage forState:UIControlStateNormal];
     /** 通俗的讲：已走进度颜色 */
-    [skBardurationSlider setMinimumTrackImage:[UIImage imageNamed:@"play_timelinefull"] forState:UIControlStateNormal];
-    [skBardurationSlider setMaximumTrackImage:[UIImage imageNamed:@"play_timeline"] forState:UIControlStateNormal];
+    [skBardurationSlider setMinimumTrackImage:[UIImage imageNamed:@"sk_play_timelinefull"] forState:UIControlStateNormal];
+    [skBardurationSlider setMaximumTrackImage:[UIImage imageNamed:@"sk_play_timeline"] forState:UIControlStateNormal];
     skBardurationSlider.minimumValue = 0;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapThumb:)];
     [skBardurationSlider addGestureRecognizer:tap];
