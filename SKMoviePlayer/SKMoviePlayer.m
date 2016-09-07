@@ -18,9 +18,6 @@
     
     /** 显示或者隐藏控制条 默认0显示 */
     BOOL                    showOrHidenControlBar;
-    
-    /** 主屏幕的播放按钮 **/
-    UIButton                *mainPlayButton;
 }
 
 /** 播放器 */
@@ -36,6 +33,9 @@
 @property (nonatomic, strong)SKMovieFullScreenTitltBar      *skMovieTitleBar;
 /** 是否出现全屏返回title控制条 默认不出现NO，全屏成功的时候置为YES */
 @property (nonatomic, assign)BOOL   isFullControlTitleBarShow;
+
+/** 主屏幕的播放按钮 **/
+@property (nonatomic, strong)UIButton               *mainPlayButton;
 
 @end
 
@@ -83,18 +83,19 @@
         
         
         /** 主屏幕的播放按钮 **/
-        UIButton *playBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        playBtn.translatesAutoresizingMaskIntoConstraints = NO;
-        [_skContentView addSubview:playBtn];
-        playBtn.backgroundColor = [UIColor clearColor];
-        [playBtn setImage:[UIImage imageNamed:@"sk_play_fullscreen"] forState:UIControlStateNormal];
-        [playBtn setImage:[UIImage imageNamed:@"sk_pause_fullscreen"] forState:UIControlStateHighlighted];
-        [playBtn setImage:[UIImage imageNamed:@"sk_pause_fullscreen"] forState:UIControlStateSelected];
-        [playBtn addTarget:self action:@selector(setupMoviePlayerAndPlay:) forControlEvents:UIControlEventTouchUpInside];
-        [self constraintItem:playBtn toItem:_skContentView topMultiplier:0 topConstant:0 bottomMultiplier:0 bottomConstant:0 leftMultiplier:0 leftConstant:0 rightMultiplier:0 rightConstant:0 widthMultiplier:0 width:50 heightMultiplier:0 height:50];
-        [self constraintCneterXOfItem:playBtn toItem:_skContentView];
-        [self constraintCneterYOfItem:playBtn toItem:_skContentView];
-        mainPlayButton = playBtn;
+        UIImage *centerPlayImage = [UIImage imageNamed:@"sk_player_main_pause"];
+        _mainPlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _mainPlayButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [_skContentView addSubview:_mainPlayButton];
+        _mainPlayButton.backgroundColor = [UIColor clearColor];
+        [_mainPlayButton setImage:[UIImage imageNamed:@"sk_player_main_pause_01"] forState:UIControlStateNormal];
+        [_mainPlayButton setImage:[UIImage imageNamed:@"sk_player_main_play"] forState:UIControlStateHighlighted];
+        [_mainPlayButton setImage:[UIImage imageNamed:@"sk_player_main_play"] forState:UIControlStateSelected];
+        [_mainPlayButton addTarget:self action:@selector(setupMoviePlayerAndPlay:) forControlEvents:UIControlEventTouchUpInside];
+        [self constraintItem:_mainPlayButton toItem:_skContentView topMultiplier:0 topConstant:0 bottomMultiplier:0 bottomConstant:0 leftMultiplier:0 leftConstant:0 rightMultiplier:0 rightConstant:0 widthMultiplier:0 width:centerPlayImage.size.width heightMultiplier:0 height:centerPlayImage.size.height];
+        [self constraintCneterXOfItem:_mainPlayButton toItem:_skContentView];
+        [self constraintCneterYOfItem:_mainPlayButton toItem:_skContentView];
+        
         /** 播放控制器 加载视频的动画 */
         [self initPlayerView];
     }
@@ -109,8 +110,10 @@
     if (_skUrlString && _skUrlString.length > 0) {
         
         aBtn.selected = !aBtn.selected;
-        
         aBtn.hidden = YES;
+        [aBtn setImage:[UIImage imageNamed:@"sk_player_main_pause"] forState:UIControlStateNormal];
+        [aBtn setImage:[UIImage imageNamed:@""] forState:UIControlStateHighlighted];
+        
         [loadActivityIndicator startAnimating];
         [self replacePlayerItem];
     }else {
@@ -123,7 +126,7 @@
     /** 如果已经存在 需要替换AVPlayerItem */
     if (skUrlString && skUrlString.length > 0) {
         
-        mainPlayButton.hidden = YES;
+        _mainPlayButton.hidden = YES;
         [loadActivityIndicator startAnimating];
         
         _skUrlString = skUrlString;
@@ -175,6 +178,11 @@
         _skMovieControl.translatesAutoresizingMaskIntoConstraints = NO;
         _skMovieControl.backgroundColor = [UIColor clearColor];
         [_skContentView addSubview:_skMovieControl];
+        /** 当控制条处于全屏状态下时, 3秒后隐藏 */
+        if (!showOrHidenControlBar) {
+            
+            [self performSelector:@selector(hideControlBar:) withObject:nil afterDelay:1.0f];
+        }
         [self constraintItem:_skMovieControl toItem:_skContentView topMultiplier:0 topConstant:0 bottomMultiplier:1 bottomConstant:0 leftMultiplier:1 leftConstant:0 rightMultiplier:1 rightConstant:0 widthMultiplier:0 width:0 heightMultiplier:0 height:30];
         _skMovieControl.skDownloadControl.hidden = !_isCanDownload;
         
@@ -322,6 +330,8 @@
             
             playStatus = YES;
             self.skMovieControl.skPlayControl.selected = NO;
+            
+            [self showCenterPlayButton];
         }
     }else if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
         
@@ -332,6 +342,8 @@
                 
                 [_skPlayer play];
                 self.skMovieControl.skPlayControl.selected = YES;
+                /** 设置屏幕中心播放按钮状态 */
+                [self hiddenCenterPlayButton];
                 
                 playStatus = NO;
             }
@@ -373,9 +385,11 @@
 
 - (void)moviePlayDidEnd:(NSNotification *)notification {
     
+    __weak typeof(self) weakSelf = self;
     [_skPlayer seekToTime:kCMTimeZero completionHandler:^(BOOL finished) {
         
-        self.skMovieControl.skPlayControl.selected = NO;
+        weakSelf.skMovieControl.skPlayControl.selected = NO;
+        [weakSelf showCenterPlayButton];
     }];
     
     if ([_delegate respondsToSelector:@selector(moviePlayerVideoPlayEnd:)]) {
@@ -393,16 +407,6 @@
     NSString *timeStr = [NSString stringWithFormat:@"%02d:%02d", mm, ss];
     
     return timeStr;
-    
-//    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:second];
-//    if (second/3600 >= 1) {
-//        
-//        [[self dateFormatter] setDateFormat:@"mm:ss"];
-//    } else {
-//        [[self dateFormatter] setDateFormat:@"mm:ss"];
-//    }
-//    NSString *showtimeNew = [[self dateFormatter] stringFromDate:date];
-//    return showtimeNew;
 }
 
 - (NSDateFormatter *)dateFormatter {
@@ -419,7 +423,6 @@
     
     /** 避免循环引用 **/
     __weak typeof(self)weakSelf = self;
-    
     /** 播放或暂停 */
     [_skMovieControl addPlayOrPauseHandler:^(id obj) {
         
@@ -428,8 +431,16 @@
         if (btn.selected) {
             
             [weakSelf.skPlayer play];
+            
+            //改变播放屏幕中心播放按钮状态
+            [weakSelf hiddenCenterPlayButton];
+            
         }else {
+            
             [weakSelf.skPlayer pause];
+            
+            //改变播放屏幕中心播放按钮状态
+            [weakSelf showCenterPlayButton];
         }
     }];
     
@@ -477,8 +488,6 @@
     /** 全屏的时候 先手动创建一个控制bar 然后将全屏按钮置为选中状态 出现titleBar */
     [self initControlBar];
     skMoviePlayer.skMovieControl.skFullControl.selected = YES;
-//    self.isFullControlTitleBarShow = YES;
-//    _skPlayerLayer.frame = CGRectMake(0, 0, skMoviePlayer.width, skMoviePlayer.height);
     [self fullScreenSwitch:skMoviePlayer.skMovieControl.skFullControl];
 }
 
@@ -564,6 +573,7 @@
 - (void)pause {
     
     [_skPlayer pause];
+    //改变播放控制条播放按钮状态
     _skMovieControl.skPlayControl.selected = NO;
 }
 
@@ -571,7 +581,39 @@
 - (void)play {
     
     [_skPlayer play];
+    //改变播放控制条播放按钮状态
     _skMovieControl.skPlayControl.selected = YES;
+}
+
+#pragma mark - 屏幕中心的播放按钮的状态设置
+/** 从屏幕中心按钮点击播放 */
+- (void)playFromCenterPlayButton:(UIButton *)aPlayBtn {
+    
+    [_skPlayer play];
+    
+    //改变播放控制条播放按钮状态
+    _skMovieControl.skPlayControl.selected = YES;
+    [self hiddenCenterPlayButton];
+}
+
+/** 从屏幕中心按钮出现 */
+- (void)showCenterPlayButton {
+    
+    /** 设置屏幕中心播放按钮状态 */
+    [self.skContentView bringSubviewToFront:self.mainPlayButton];
+    self.mainPlayButton.selected = NO;
+    self.mainPlayButton.hidden = NO;
+    
+    [self.mainPlayButton removeTarget:self action:@selector(setupMoviePlayerAndPlay:) forControlEvents:UIControlEventTouchUpInside];
+    [self.mainPlayButton addTarget:self action:@selector(playFromCenterPlayButton:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+/** 从屏幕中心按钮隐藏 */
+- (void)hiddenCenterPlayButton {
+    
+    /** 设置屏幕中心播放按钮状态 */
+    self.mainPlayButton.selected = YES;
+    self.mainPlayButton.hidden = YES;
 }
 
 #pragma mark - 懒加载代码 全屏操作－创建全屏视图控制器
@@ -604,10 +646,34 @@
     showOrHidenControlBar = !showOrHidenControlBar;
     
     _skMovieControl.hidden = showOrHidenControlBar;
-    
     if (_isFullControlTitleBarShow) {
         
         _skMovieTitleBar.hidden = showOrHidenControlBar;
+    }
+    
+    /** 当控制条处于全屏状态下时, 8秒后隐藏 */
+    if (!showOrHidenControlBar) {
+        
+        //指定取消 未执行的一条或者多条的延迟方法.
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideControlBar:) object:nil];
+        [self performSelector:@selector(hideControlBar:) withObject:nil afterDelay:8.0f];
+    }else {
+        //指定取消 未执行的一条或者多条的延迟方法.
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideControlBar:) object:nil];
+    }
+}
+
+/** 隐藏控制条 */
+- (void)hideControlBar:(id)sender {
+    
+    if (!showOrHidenControlBar) {
+        
+        showOrHidenControlBar = !showOrHidenControlBar;
+        _skMovieControl.hidden = showOrHidenControlBar;
+        if (_isFullControlTitleBarShow) {
+            
+            _skMovieTitleBar.hidden = showOrHidenControlBar;
+        }
     }
 }
 

@@ -71,7 +71,7 @@
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_skCurrentTimeLabel attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_skPlayControl attribute:NSLayoutAttributeRight multiplier:1 constant:5]];
     
     _skTotalTimeLabel = [[UILabel alloc] init];
-    _skTotalTimeLabel.text = @"000:00";
+    _skTotalTimeLabel.text = @"00:00";
     _skTotalTimeLabel.backgroundColor = [UIColor clearColor];
     _skTotalTimeLabel.textColor = [UIColor whiteColor];
     _skTotalTimeLabel.textAlignment = NSTextAlignmentCenter;
