@@ -67,7 +67,7 @@ typedef void (^SKFullDownloaded)(BOOL isDownloaded);
 @end
 
 
-/** 代理方法 **/
+/**  代理方法 **/
 @protocol SKMoviePlayerDelegate <NSObject>
 
 @optional
