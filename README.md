@@ -67,6 +67,7 @@
 
 ### 注意事项:
 ```
-必须是addSubview添加播放器SKMoviePlayer。
+1.必须是addSubview添加播放器SKMoviePlayer。
+2.播放器比例是16:9，创建的播放器时候可以根据比例设置宽高。
 
 ```
