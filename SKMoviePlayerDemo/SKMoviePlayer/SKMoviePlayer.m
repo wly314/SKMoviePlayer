@@ -539,8 +539,7 @@
     CMTime toTime = CMTimeMakeWithSeconds(time, _skPlayerItem.currentTime.timescale);
     [_skPlayer seekToTime:toTime completionHandler:^(BOOL finished) {
         
-        self.skMovieControl.skPlayControl.selected = YES;
-        [_skPlayer play];
+        [self play];
     }];
 }
 
@@ -550,8 +549,7 @@
     CMTime toTime = CMTimeMakeWithSeconds(time, _skPlayerItem.currentTime.timescale);
     [_skPlayer seekToTime:toTime completionHandler:^(BOOL finished) {
         
-        self.skMovieControl.skPlayControl.selected = YES;
-        [_skPlayer play];
+        [self play];
     }];
 }
 
@@ -575,6 +573,7 @@
     [_skPlayer pause];
     //改变播放控制条播放按钮状态
     _skMovieControl.skPlayControl.selected = NO;
+    [self showCenterPlayButton];
 }
 
 /** 播放 */
@@ -583,6 +582,7 @@
     [_skPlayer play];
     //改变播放控制条播放按钮状态
     _skMovieControl.skPlayControl.selected = YES;
+    [self hiddenCenterPlayButton];
 }
 
 #pragma mark - 屏幕中心的播放按钮的状态设置
