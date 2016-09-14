@@ -109,6 +109,15 @@
     
     if (_skUrlString && _skUrlString.length > 0) {
         
+        if ([_delegate respondsToSelector:@selector(moviePlayerShouldStartLoadToPlay:)]) {
+            
+            /** 不能播放，直接return */
+            BOOL isCanLoad = [_delegate moviePlayerShouldStartLoadToPlay:self];
+            if (!isCanLoad) {
+                return;
+            }
+        }
+        
         aBtn.selected = !aBtn.selected;
         aBtn.hidden = YES;
         [aBtn setImage:[UIImage imageNamed:@"sk_player_main_pause"] forState:UIControlStateNormal];
@@ -116,8 +125,22 @@
         
         [loadActivityIndicator startAnimating];
         [self replacePlayerItem];
+        
     }else {
         
+        /** 无视频地址 */
+        if ([[UIDevice currentDevice] systemVersion].floatValue < 8.0) {
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"视频地址异常" message:@"播放器未获取到视频地址或获取视频地址错误" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil];
+            [alertView show];
+            
+        }else {
+            
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"视频地址异常" message:@"播放器未获取视频地址或获取视频地址错误" preferredStyle:UIAlertControllerStyleAlert];
+            [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            }]];
+            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+        }
     }
 }
 

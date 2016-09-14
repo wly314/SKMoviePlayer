@@ -71,6 +71,10 @@ typedef void (^SKFullDownloaded)(BOOL isDownloaded);
 @protocol SKMoviePlayerDelegate <NSObject>
 
 @optional
+
+/** 播放器是否可以加载并播放 如果不实现，默认为可以播放 **/
+- (BOOL)moviePlayerShouldStartLoadToPlay:(SKMoviePlayer *)aSkMoviePlayer;
+
 /** isFull ：是否屏幕 使用方法见下 */
 - (void)moviePlayer:(SKMoviePlayer *)aSkMoviePlayer fullScreenSwitchOrientation:(BOOL)isFull complection:(SKFullScreenCompletion)complection;
 

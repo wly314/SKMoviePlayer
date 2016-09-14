@@ -44,6 +44,12 @@
 
 #pragma mark - 播放器代理
 #pragma mark 懒加载代码
+/** 播放器是否可以加载并播放 如果不实现，默认为可以播放 **/
+- (BOOL)moviePlayerShouldStartLoadToPlay:(SKMoviePlayer *)aSkMoviePlayer {
+    
+    return YES;
+}
+
 - (void)moviePlayer:(SKMoviePlayer *)aSkMoviePlayer fullScreenSwitchOrientation:(BOOL)isFull complection:(SKFullScreenCompletion)complection {
     
     if(isFull) {
